@@ -11,9 +11,9 @@ url = "https://air-quality-api.open-meteo.com/v1/air-quality"
 params = {
     "latitude": latitude,
     "longitude": longitude,
-    "start_date": "2023-01-01",
+    "start_date": "2025-01-01",
     "timezone": "auto",
-    "end_date": "2023-03-31",
+    "end_date": "2025-12-31",
     "hourly": ["pm10", "pm2_5", "us_aqi"]
 }
 

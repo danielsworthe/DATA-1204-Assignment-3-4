@@ -1,14 +1,28 @@
-# Assignment 3: Data Pipeline for Statistical Analysis  
+# Assignment 3 & 4: Data Pipeline and Interactive Statistical Analysis  
 **Pack B — Weather & Air Quality**
 
+---
+
 ## Project Overview
-This project builds a simple data pipeline using two public APIs to prepare a dataset for statistical analysis. The pipeline follows a **Bronze → Silver → Gold** architecture:
 
-- **Bronze:** Raw data collected from APIs  
-- **Silver:** Cleaned and structured data  
-- **Gold:** Final dataset prepared for statistical testing  
+This project is completed in two parts:
 
-The goal is to design a dataset that can support hypothesis testing in a later stage of the assignment.
+### **Assignment 3 (Part 1) — Data Engineering**
+A data pipeline was built using two public APIs following a **Bronze → Silver → Gold** architecture:
+
+- **Bronze:** Raw API data (JSON)
+- **Silver:** Cleaned and structured datasets
+- **Gold:** Final dataset prepared for statistical analysis
+
+---
+
+### **Assignment 4 (Part 2) — Statistical Analysis App**
+The project was extended by:
+
+- Adding a **new external data source (holidays)**
+- Creating additional derived variables
+- Building an **interactive statistical analysis app using Streamlit**
+- Performing multiple statistical tests
 
 ---
 
@@ -18,32 +32,48 @@ This project uses the following APIs:
 
 - Weather Data: :contentReference[oaicite:0]{index=0}  
 - Air Quality Data: :contentReference[oaicite:1]{index=1}  
+- Holiday Data (Assignment 4): :contentReference[oaicite:2]{index=2}  
 
-Both datasets are based on the same geographic location and time period, allowing for a clean join using the `date` field.
+All datasets are aligned using the `date` field.
 
 ---
 
 ## Data Pipeline Architecture
 
 ### Bronze Layer (Raw Data)
-- Data is collected directly from APIs and stored as raw JSON files.
-- No modifications are made to preserve original data integrity.
+- Raw JSON data collected from APIs
+- Stored without modification
+- Preserves original structure for traceability
+
+---
 
 ### Silver Layer (Cleaned Data)
-- JSON data is parsed and transformed into structured tables.
-- Key steps:
+- JSON parsed into structured tables
+- Key transformations:
   - Convert timestamps to `date`
   - Select relevant columns
-  - Ensure proper data types
-  - Aggregate hourly air quality data into daily averages
+  - Ensure correct data types
+  - Aggregate hourly air quality → daily averages
+  - Clean and structure holiday data
+
+---
 
 ### Gold Layer (Final Dataset)
-- Weather and air quality datasets are merged on `date`.
-- Additional features are created:
-  - `bad_weather_day` (precipitation > 5 OR temperature < 0)
-  - `bad_air_day` (PM2.5 > 35)
 
-This dataset is optimized for statistical analysis.
+#### Assignment 3 Gold Dataset:
+- Merged weather + air quality data
+- Features:
+  - `bad_weather_day`
+  - `bad_air_day`
+
+#### Assignment 4 Final Dataset:
+- Added holiday data
+- New features:
+  - `is_holiday`
+  - `holiday_name`
+  - `day_type`
+
+This final dataset is fully prepared for statistical analysis and visualization.
 
 ---
 
@@ -54,52 +84,95 @@ This dataset is optimized for statistical analysis.
 | date | Observation date |
 | temp_max | Maximum daily temperature |
 | temp_min | Minimum daily temperature |
-| precipitation | Daily precipitation total |
+| precipitation | Daily precipitation |
 | pm25 | Daily average PM2.5 |
-| bad_weather_day | Boolean indicator of poor weather |
-| bad_air_day | Boolean indicator of poor air quality |
+| bad_weather_day | Indicator of poor weather |
+| bad_air_day | Indicator of poor air quality |
+| is_holiday | Indicator for holidays |
+| holiday_name | Name of holiday |
+| day_type | Holiday vs Non-holiday |
 
 ---
 
-## Planned Statistical Analysis
+## Statistical Analysis
 
-**Research Question:**  
-Is average PM2.5 higher on bad weather days compared to normal days?
+### Core Question:
+Is air quality (PM2.5) affected by weather conditions and holidays?
 
-- **Outcome Variable:** PM2.5 (continuous)  
-- **Grouping Variable:** Bad weather day (True/False)  
-- **Test:** Two-sample t-test  
+---
+
+### Tests Performed:
+
+1. **One-Sample t-test**
+   - Compare mean to benchmark value
+
+2. **Two-Sample t-test**
+   - Compare PM2.5 on holiday vs non-holiday days
+
+3. **Chi-Square Test**
+   - Relationship between holiday status and bad air days
+
+4. **Variance Comparison (Levene’s Test)**
+   - Compare variability between groups
+
+5. **Correlation Analysis**
+   - Relationship between temperature and PM2.5
+
+---
+
+## Interactive App
+
+An interactive dashboard was built using :contentReference[oaicite:3]{index=3}.
+
+### Features:
+- Data filtering (date range, categories)
+- Interactive visualizations:
+  - Time series (PM2.5)
+  - Histograms (temperature)
+  - Boxplots (group comparisons)
+  - Scatter plots (correlation)
+- Statistical test outputs with interpretation
+- Summary metrics
 
 ---
 
 ## How to Run the Project
 
 ### 1. Install Dependencies
+
 pip install -r requirements.txt
-
-
-### 2. Run Data Ingestion
-python ingest/ingest_weather.py
-python ingest/ingest_air_quality.py
-
-
-### 3. Run Data Transformation
-python transform/transform_weather.py
-python transform/transform_air_quality.py
-
-
-### 4. Create Gold Dataset
-python transform/create_gold.py
-
-
-### 5. Output Location
-data/gold/weather_air_quality_gold.csv
-
 
 ---
 
-## Project Structure
-assignment3/
+### 2. Run Assignment 3 Pipeline
+
+python ingest/ingest_weather.py
+python ingest/ingest_air_quality.py
+
+python transform/transform_weather.py
+python transform/transform_air_quality.py
+
+python transform/create_gold.py
+
+---
+
+### 3. Run Assignment 4 Pipeline
+
+python ingest/ingest_holidays.py
+python transform/transform_holidays.py
+python transform/create_final_dataset.py
+
+---
+
+### 4. Launch the App
+
+streamlit run app/streamlit_app.py
+
+---
+
+## 📁 Project Structure
+
+assignment3&4/
 │
 ├── data/
 │ ├── bronze/
@@ -108,13 +181,15 @@ assignment3/
 │
 ├── ingest/
 ├── transform/
-├── notebooks/
+├── app/
+│ └── streamlit_app.py
 │
-├── README.md
 ├── analysis_preview.md
+├── assignment4_analysis_plan.md
+├── assignment4_reflection.md
+├── README.md
 ├── requirements.txt
 └── .gitignore
-
 
 ---
 
@@ -124,40 +199,68 @@ assignment3/
 - ChatGPT  
 - Gemini  
 
+---
+
 ### How AI Helped
 AI tools were used to:
-- Structure the data pipeline (Bronze → Silver → Gold)
-- Generate and refine Python scripts for API ingestion and data transformation
-- Debug errors and troubleshoot issues
-- Explain concepts such as ETL pipelines and statistical test preparation
-- Cross-check code for correctness and completeness
+- Design the data pipeline structure
+- Generate and refine Python scripts
+- Explain statistical concepts and test selection
+- Debug and troubleshoot errors
+- Validate and improve code accuracy
 
-Gemini was particularly helpful for:
-- Troubleshooting errors encountered during execution
-- Explaining and validating ChatGPT-generated code
-- Suggesting improvements and minor enhancements for accuracy
-- Supporting deeper understanding of assignment requirements
+Gemini was especially useful for:
+- Troubleshooting runtime errors
+- Explaining ChatGPT-generated code
+- Cross-verifying correctness
+- Providing additional clarification
+
+---
 
 ### Example of Verification / Fix
-While executing the `transform/transform_weather.py` script, Windows 11 Smart App Control blocked part of the application. I used Gemini to investigate the issue. It explained what Smart App Control is and provided guidance on how to resolve it, including referencing external resources. I followed the suggested steps (including checking system settings), and after restarting my computer, the issue was resolved and the script executed successfully.
+While executing `transform/transform_weather.py`, Windows 11 Smart App Control blocked part of the application.
 
-This demonstrates that while AI tools provided guidance, I independently verified and resolved issues to ensure proper functionality.
+Using Gemini:
+- I learned what Smart App Control is
+- Received guidance on how to resolve the issue
+- Followed suggested steps (including system adjustments and restart)
+
+After restarting, the script executed successfully.
+
+This demonstrates independent problem-solving and verification beyond AI-generated solutions.
 
 ---
 
 ## Notes
-- The pipeline is designed for clarity and simplicity, not production use
-- Data is limited to a selected time range for demonstration purposes
-- The Gold dataset is intentionally structured for statistical analysis in the next phase of the assignment
+
+- This project is designed for learning purposes, not production use
+- Data is limited to a selected time period
+- Statistical tests assume independence and reasonable distributions
+- Correlation does not imply causation
+
+---
+
+## Video Demonstration (Unavailable on GitHub)
+
+A video demonstration accompanies this project and includes:
+
+- Explanation of the data pipeline
+- Walkthrough of the Streamlit app
+- Demonstration of statistical tests
+- Explanation of the added data source
+- Discussion of challenges and limitations
 
 ---
 
 ## Conclusion
-This project demonstrates how to:
-- Collect data from APIs  
-- Build a structured data pipeline  
-- Prepare a dataset for statistical analysis  
 
-The final dataset is clean, interpretable, and ready for hypothesis testing.
+This project demonstrates:
+
+- Building a complete data pipeline  
+- Integrating multiple data sources  
+- Preparing data for statistical analysis  
+- Developing an interactive analytics application  
+
+The final result is a structured, interpretable dataset and a functional app that supports real-world analytical thinking.
 
 ---

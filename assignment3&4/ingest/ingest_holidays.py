@@ -48,5 +48,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    
-print("Canadian Holidays API ingestion script successful.")
+
+print("Canadian Holidays API ingestion script successfully ran.")

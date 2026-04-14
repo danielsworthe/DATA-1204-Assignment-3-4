@@ -2,9 +2,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-A3_GOLD_PATH = Path("data/gold/weather_&_air_quality_gold.csv")
-HOLIDAY_SILVER_PATH = Path("data/silver/holidays.csv")
-FINAL_GOLD_PATH = Path("data/gold/final_dataset.csv")
+A3_GOLD_PATH = Path("assignment3&4/data/gold/weather_&_air_quality_gold.csv")
+HOLIDAY_SILVER_PATH = Path("assignment3&4/data/silver/holidays.csv")
+FINAL_GOLD_PATH = Path("assignment3&4/data/gold/final_dataset.csv")
 FINAL_GOLD_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 def main() -> None:
